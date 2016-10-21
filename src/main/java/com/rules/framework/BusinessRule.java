@@ -1,5 +1,7 @@
 package com.rules.framework;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,20 @@ public abstract class BusinessRule implements IRule {
 
 	private static final Logger logger = LoggerFactory.getLogger(BusinessRule.class);
 	
+	private Map OptionalFields;
+	
+	
+	
+	public Map getOptionalFields() {
+		return OptionalFields;
+	}
+
+
+	public void setOptionalFields(Map optionalFields) {
+		OptionalFields = optionalFields;
+	}
+
+
 	@Override
 	public Object executePreprocess(Object request) {
 		// TODO Auto-generated method stub
@@ -32,4 +48,5 @@ public abstract class BusinessRule implements IRule {
 		return request;
 	}
 
+	
 }

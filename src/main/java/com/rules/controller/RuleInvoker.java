@@ -88,6 +88,15 @@ public class RuleInvoker {
 		return response.toString();
 	}
 	
+	/**
+	 * 
+	 * @param @param request
+	 * @param @param ruleList
+	 * @param @return
+	 * @param @throws Exception 
+	 * @return String
+	 *
+	 */
 	private String executeRule(String request, List <Rule>  ruleList) throws Exception{
 		
 		JSONParser parser = null;
@@ -115,7 +124,7 @@ public class RuleInvoker {
 	 */
 	private List <Rule> getRules(String microserviceName, String hookInd) throws Exception{
 		
-		/*
+		
 		RuleMetadataPGDAO ruleMetadataDAO = (RuleMetadataPGDAO) new DAOFactory().getDAO(
 				new DBFactory().getDBService(RuleConstants.POSTGRESQL)
 				.getService(), RuleConstants.RULE_METADATA); 
@@ -126,8 +135,8 @@ public class RuleInvoker {
 		else
 			ruleList = ruleMetadataDAO.getRules(microserviceName, hookInd);
 		
-		*/
 		
+		/*
 		//To mock the input
 		List ruleList = new ArrayList <Rule> ();
 		Rule rule = new Rule();
@@ -140,8 +149,16 @@ public class RuleInvoker {
 		rule = new Rule();
 		rule.setRuleName("CountRule");
 		rule.setRuleType("Static");
+		//rule.setOptionalfields("COUNT=2");;
 		ruleList.add(rule);
 		
+		
+		rule = new Rule();
+		rule.setRuleName("SelectFieldsRule");
+		rule.setRuleType("Static");
+		rule.setOptionalfields("FIELDS=cust_nbr,B,row_inact_dt");
+		ruleList.add(rule);
+		*/
 		
 		return ruleList;
 	}

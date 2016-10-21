@@ -18,4 +18,7 @@ public class RuleInvokerConstants {
 	public static String CUSTOMER_SEARCH_HANDLER = "CustomerSearch";
 	public static String FORECAST_RULE = "ForecastRule";
 	public static String COUNT_RULE = "CountRule";
+	public static String SELECT_FIELDS_RULE = "SelectFieldsRule";
+	public static String COUNT = "COUNT";
+	public static String FIELDS = "FIELDS";
 }

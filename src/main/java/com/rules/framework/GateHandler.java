@@ -46,7 +46,7 @@ public class GateHandler {
 		for (int i=0; i < ruleList.size(); i++){
 			rule = ruleList.get(i);
 			logger.info("Executing rule  ---- > "+ rule.getRuleName());
-			handler = ruleHandlerFactory.createHandler(rule.getRuleName(), rule.getRuleType());
+			handler = ruleHandlerFactory.createHandler(rule.getRuleName(), rule.getRuleType(), rule.getOptionalFieldsMap());
 			//execute preprocess
 			request = handler.executePreprocess(request);
 			//execute actual rule
