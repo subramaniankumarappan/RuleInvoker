@@ -124,7 +124,7 @@ public class RuleInvoker {
 		if(hookInd == null || hookInd.equals(""))
 			ruleList = ruleMetadataDAO.getRules(microserviceName); 
 		else
-			ruleList = null;//ruleMetadataDAO.getRules(microserviceName, hookInd);
+			ruleList = ruleMetadataDAO.getRules(microserviceName, hookInd);
 		
 		*/
 		
