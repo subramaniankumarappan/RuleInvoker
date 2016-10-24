@@ -19,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import com.rules.common.RuleInvokerConstants;
 import com.rules.common.constants.RuleConstants;
 import com.rules.common.pojo.Rule;
+import com.rules.common.util.RuleUtil;
 import com.rules.data.dao.postgres.RuleMetadataPGDAO;
 import com.rules.data.factory.DAOFactory;
 import com.rules.data.factory.DBFactory;
+import com.rules.exception.RuleInterceptorBaseException;
 import com.rules.framework.BusinessRule;
 import com.rules.framework.GateHandler;
 
@@ -142,6 +144,13 @@ public class RuleInvoker {
 		Rule rule = new Rule();
 		
 		
+		rule = new Rule();
+		rule.setRuleName("SortRule");
+		rule.setRuleType("Static");
+		rule.setOptionalfields("FIELDS=cust_nbr,row_inact_dt;");
+		ruleList.add(rule);
+		
+		/*
 		rule.setRuleName("ForecastRule");
 		rule.setRuleType("Static");
 		ruleList.add(rule);

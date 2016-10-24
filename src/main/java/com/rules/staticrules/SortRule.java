@@ -1,13 +1,14 @@
 /**
-* File  : CountRule.java
-* Description          : This CountRule is   
+* File  : SortRule.java
+* Description          : This SortRule is  a rule class to sort the array based on list of input fields  
 * Revision History :
 * Version      Date            	Author       Reason
-* 0.1          Oct 17, 2016      	595251  	 Initial version
+* 0.1          Oct 24, 2016      	595251  	 Initial version
 */
 package com.rules.staticrules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rule.common.util.RuleInvokerUtil;
 import com.rules.common.RuleInvokerConstants;
+import com.rules.common.MultiFieldJSONComparator;
 import com.rules.common.util.RuleUtil;
 import com.rules.framework.BusinessRule;
 
@@ -24,41 +26,46 @@ import com.rules.framework.BusinessRule;
  * @author 595251
  *
  */
-public class CountRule extends BusinessRule{
+public class SortRule extends BusinessRule{
 
-	private static final Logger logger = LoggerFactory.getLogger(CountRule.class);
-
-		
+	private static final Logger logger = LoggerFactory.getLogger(SortRule.class);
+	
 	/* (non-Javadoc)
 	 * @see com.rules.framework.IRule#execute(java.lang.Object)
 	 */
 	@Override
 	public Object execute(Object request) {
-		logger.info("CountRule.execute --->");
+		logger.info("SortRule.execute --->");
 		JSONObject json = (JSONObject) request;
 		
 		JSONArray array = (JSONArray) json.get("result");
 		logger.info("array.size() --->" +array.size());
-		//get the limit set for this rule
-		int limit = RuleInvokerUtil.getLimit(this.getOptionalFields());
-		//if no limit set, set the array size
-		limit = limit>0?limit:array.size();
 		
+		//get the sort field  for this rule
+		List <String> sortFieldList = RuleInvokerUtil.getFields(this.getOptionalFields());
+		String orderBy = RuleInvokerUtil.getOrderBy(this.getOptionalFields());
+		
+		
+		logger.info("sortFieldList --->" +sortFieldList);
 		List <JSONObject> newArray = new ArrayList () ;
-
-		//if no input values to limit, don't process and return the same input
-		if (limit == array.size())
+		//if no input values to sort, don't process and return the same input
+		if (RuleUtil.isEmpty(sortFieldList))
 			return json;
 		
 		try{
-		for (int i=0; i< array.size() & i < limit; i++){
-			newArray.add((JSONObject) array.get(i));
-		}
+			for (int i=0; i< array.size() ; i++){
+				newArray.add((JSONObject) array.get(i));
+			}
 		}catch(Exception e){
 			logger.info("Exception --->" +e.getMessage());
 		}
 			
 		logger.info("newArray.size--->" + newArray.size());
+		//sort the collection
+		Collections.sort(newArray, 				
+				RuleInvokerConstants.ORDER_BY_ASC.equalsIgnoreCase(orderBy)==true?
+						new MultiFieldJSONComparator(sortFieldList):
+							new MultiFieldJSONComparator(sortFieldList).reversed());
 		logger.info("newArray--->" + newArray);
 		JSONArray jarr = new JSONArray();
 		jarr.addAll(newArray);
@@ -69,6 +76,6 @@ public class CountRule extends BusinessRule{
 	}
 
 
-
 	
+
 }

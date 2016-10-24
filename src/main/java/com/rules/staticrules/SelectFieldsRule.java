@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rule.common.util.RuleInvokerUtil;
 import com.rules.common.RuleInvokerConstants;
 import com.rules.common.constants.RuleConstants;
 import com.rules.common.util.RuleUtil;
@@ -47,7 +48,7 @@ public class SelectFieldsRule extends BusinessRule{
 		fieldsList.add("xyz");
 		*/
 		//get list of fields
-		List <String> fieldsList = getFields();
+		List <String> fieldsList = RuleInvokerUtil.getFields(this.getOptionalFields());
 		//if no fields set, return the same input without processing
 		if (fieldsList == null || fieldsList.size() == 0)
 			return json;
@@ -85,35 +86,5 @@ public class SelectFieldsRule extends BusinessRule{
 		//return newArray.toString();
 	}
 
-	/**
-	 * @param @return 
-	 * @return List<String>
-	 *
-	 */
-	private List<String> getFields() {
-		if (!isFields())
-			return null;
-		String fields = (String) this.getOptionalFields().get(RuleInvokerConstants.FIELDS);
-		if (RuleUtil.isEmpty(fields))
-			return null;
-		
-		//return RuleUtil.getList(fields, RuleConstants.FIELDS_SEPERATOR);
-		return RuleUtil.getList(fields, ",");
-	}
-	
-	
-	/**
-	 * @param @return 
-	 * @return boolean
-	 *
-	 */
-	private boolean isFields() {
-		
-		if (this.getOptionalFields() == null || RuleUtil.isEmpty(this.getOptionalFields().get(RuleInvokerConstants.FIELDS)))
-			return false;
-		
-		return true;
-	}
-	
 
 }

@@ -1,9 +1,13 @@
 package com.rules.framework;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.rules.common.RuleInvokerConstants;
+import com.rules.common.util.RuleUtil;
 
 
 /**
@@ -30,6 +34,8 @@ public abstract class BusinessRule implements IRule {
 
 	public void setOptionalFields(Map optionalFields) {
 		OptionalFields = optionalFields;
+		logger.info("BusinessRule.setOptionalFields() --->" +this.getOptionalFields());
+		
 	}
 
 
@@ -49,4 +55,6 @@ public abstract class BusinessRule implements IRule {
 	}
 
 	
+
+
 }

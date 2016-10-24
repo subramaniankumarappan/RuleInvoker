@@ -19,6 +19,11 @@ public class RuleInvokerConstants {
 	public static String FORECAST_RULE = "ForecastRule";
 	public static String COUNT_RULE = "CountRule";
 	public static String SELECT_FIELDS_RULE = "SelectFieldsRule";
+	public static String SORT_RULE = "SortRule";
 	public static String COUNT = "COUNT";
 	public static String FIELDS = "FIELDS";
+	public static String ORDER_BY = "ORDER BY";
+	public static String ORDER_BY_ASC = "ASC";
+	public static String ORDER_BY_DESC = "DESC";
+	
 }

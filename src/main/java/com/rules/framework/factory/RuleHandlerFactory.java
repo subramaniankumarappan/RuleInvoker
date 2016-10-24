@@ -19,6 +19,7 @@ import com.rules.staticrules.CountRule;
 import com.rules.staticrules.CustomerSearchRule;
 import com.rules.staticrules.ForecastRule;
 import com.rules.staticrules.SelectFieldsRule;
+import com.rules.staticrules.SortRule;
 
 public class RuleHandlerFactory {
 	
@@ -48,6 +49,9 @@ public class RuleHandlerFactory {
 			handler = new CountRule();
 		else if (RuleInvokerConstants.SELECT_FIELDS_RULE.equalsIgnoreCase(handlerName))
 			handler =  new SelectFieldsRule();
+		else if (RuleInvokerConstants.SORT_RULE.equalsIgnoreCase(handlerName))
+			handler =  new SortRule();
+		
 		if (handler == null)
 			throw new RuleInvokerBaseException("No class available for the Rule - "+handlerName);
 		
