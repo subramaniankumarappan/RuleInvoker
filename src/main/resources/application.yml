@@ -1,0 +1,13 @@
+spring: 
+  application: 
+    name: Rule-Invoker
+eureka: 
+  client: 
+    instance: 
+      nonSecurePort: "${CF_INSTANCE_PORT:${PORT:${server.port:8010}}}"
+      preferIpAddress: true
+    serviceUrl: 
+      defaultZone: http://eureka-serviceregistry.mybluemix.net/eureka
+security: 
+  basic: 
+    enabled: false

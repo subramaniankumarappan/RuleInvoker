@@ -144,16 +144,16 @@ public class RuleInvoker {
 		Rule rule = new Rule();
 		
 		
-		rule = new Rule();
+		rule.setRuleName("SearchRule");
+		rule.setRuleType("Static");
+		rule.setOptionalfields("FIELD=cust_nbr;EXPRESSION=");
+		ruleList.add(rule);
+		/*
 		rule.setRuleName("SortRule");
 		rule.setRuleType("Static");
 		rule.setOptionalfields("FIELDS=cust_nbr,row_inact_dt;");
 		ruleList.add(rule);
 		
-		/*
-		rule.setRuleName("ForecastRule");
-		rule.setRuleType("Static");
-		ruleList.add(rule);
 		
 		rule = new Rule();
 		rule.setRuleName("CountRule");

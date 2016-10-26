@@ -17,7 +17,7 @@ import com.rules.framework.BusinessRule;
 import com.rules.framework.IRule;
 import com.rules.staticrules.CountRule;
 import com.rules.staticrules.CustomerSearchRule;
-import com.rules.staticrules.ForecastRule;
+import com.rules.staticrules.SearchRule;
 import com.rules.staticrules.SelectFieldsRule;
 import com.rules.staticrules.SortRule;
 
@@ -43,8 +43,8 @@ public class RuleHandlerFactory {
 		
 		if (RuleInvokerConstants.CUSTOMER_SEARCH_HANDLER.equalsIgnoreCase(handlerName))
 			handler = new CustomerSearchRule();
-		else if (RuleInvokerConstants.FORECAST_RULE.equalsIgnoreCase(handlerName))
-			handler = new ForecastRule();
+		else if (RuleInvokerConstants.SEARCH_RULE.equalsIgnoreCase(handlerName))
+			handler = new SearchRule();
 		else if (RuleInvokerConstants.COUNT_RULE.equalsIgnoreCase(handlerName))
 			handler = new CountRule();
 		else if (RuleInvokerConstants.SELECT_FIELDS_RULE.equalsIgnoreCase(handlerName))
