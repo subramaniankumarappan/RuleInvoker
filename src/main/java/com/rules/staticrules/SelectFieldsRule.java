@@ -48,7 +48,7 @@ public class SelectFieldsRule extends BusinessRule{
 		fieldsList.add("xyz");
 		*/
 		//get list of fields
-		List <String> fieldsList = RuleInvokerUtil.getFields(this.getOptionalFields());
+		List <String> fieldsList = RuleInvokerUtil.getSelectFields(this.getOptionalFields());
 		//if no fields set, return the same input without processing
 		if (fieldsList == null || fieldsList.size() == 0)
 			return json;

@@ -19,12 +19,11 @@ import org.slf4j.LoggerFactory;
 import com.rules.common.RuleInvokerConstants;
 import com.rules.common.constants.RuleConstants;
 import com.rules.common.pojo.Rule;
+import com.rules.common.pojo.RuleParams;
 import com.rules.common.util.RuleUtil;
 import com.rules.data.dao.postgres.RuleMetadataPGDAO;
 import com.rules.data.factory.DAOFactory;
 import com.rules.data.factory.DBFactory;
-import com.rules.exception.RuleInterceptorBaseException;
-import com.rules.framework.BusinessRule;
 import com.rules.framework.GateHandler;
 
 /**
@@ -33,50 +32,27 @@ import com.rules.framework.GateHandler;
  */
 public class RuleInvoker {
 	
-	private static final Logger logger = LoggerFactory.getLogger(BusinessRule.class);
-	
-	/**
-	 * this is a wrapper method for rest method.
-	 * @param @param request
-	 * @param @param microserviceName
-	 * @param @return 
-	 * @return String
-	 *
-	 */
-	public String executePrehookRule(String request, String microserviceName){
-		return executeRule(request, microserviceName, RuleInvokerConstants.PREHOOK);
-	}
-	
-	/**
-	 * this is a wrapper method for rest method.
-	 * @param @param request
-	 * @param @param microserviceName
-	 * @param @return 
-	 * @return String
-	 *
-	 */
-	public String executePosthookRule(String request, String microserviceName){
-		return executeRule(request, microserviceName, RuleInvokerConstants.POSTHOOK);
-	}
+	private static final Logger logger = LoggerFactory.getLogger(RuleInvoker.class);
 	
 	/**
 	 * 
 	 * @param @param request
-	 * @param @param ruleList
+	 * @param @param ruleParams
 	 * @param @return
 	 * @param @throws Exception 
 	 * @return String
 	 *
 	 */
-	private String executeRule(String request, String microserviceName, String hookInd) {
+	public String executeRule(String request, RuleParams ruleParams) throws Exception{
 		
 		List <Rule> ruleList  = 	null; 
 		String response = null;
+		ruleList = getQueryStringRules(ruleParams);
 		try{
-			if(RuleInvokerConstants.PREHOOK.equalsIgnoreCase(hookInd))
-				ruleList  = 	getRules(microserviceName, RuleInvokerConstants.PREHOOK); 
-			else if(RuleInvokerConstants.POSTHOOK.equalsIgnoreCase(hookInd))
-				ruleList  = 	getRules(microserviceName, RuleInvokerConstants.POSTHOOK); 
+			if(RuleConstants.PREHOOK.equalsIgnoreCase(ruleParams.getHookInd()))
+				ruleList.addAll(getDBRules(ruleParams.getMsName(), RuleConstants.PREHOOK)); 
+			else if(RuleConstants.POSTHOOK.equalsIgnoreCase(ruleParams.getHookInd()))
+				ruleList.addAll(getDBRules(ruleParams.getMsName(), RuleConstants.POSTHOOK)); 
 			response = executeRule(request, ruleList);
 		}catch (ParseException e){
 			logger.info("parser exception ---- > "+ e.getMessage());
@@ -88,7 +64,10 @@ public class RuleInvoker {
 			return "";
 		
 		return response.toString();
+		
 	}
+
+	
 	
 	/**
 	 * 
@@ -101,10 +80,10 @@ public class RuleInvoker {
 	 */
 	private String executeRule(String request, List <Rule>  ruleList) throws Exception{
 		
+		logger.info("ruleList ---- > "+ ruleList);
 		JSONParser parser = null;
 		JSONObject json = null;
 		JSONObject response = null;
-		
 		parser = new JSONParser();
 		json = (JSONObject) parser.parse(request);			
 		//execute the rules
@@ -114,6 +93,88 @@ public class RuleInvoker {
 	}
 	
 	
+	
+	/**
+	 * @param @param ruleParams
+	 * @param @return 
+	 * @return List<Rule>
+	 *
+	 */
+	private List<Rule> getQueryStringRules(RuleParams ruleParams){
+		//create all static rules here
+		
+		List<Rule> ruleList = new ArrayList ();
+		Rule rule = null;
+		
+		//check and add count rule
+		if (! RuleUtil.isEmpty(ruleParams.getSize())){
+			rule = new Rule();
+			rule.setEnabled(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleName(RuleInvokerConstants.COUNT_RULE);
+			rule.setProceedInd(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleType(RuleInvokerConstants.STATIC_HANDLER);
+			rule.setExecSeq("-1");
+			rule.setOptionalfields(RuleConstants.SIZE + RuleConstants.EQUALS + ruleParams.getSize() );
+			
+			ruleList.add(rule);
+		}
+		//check and add search rule
+		if (! RuleUtil.isEmpty(ruleParams.getSearchField()) && !RuleUtil.isEmpty(ruleParams.getExpression())){
+			rule = new Rule();
+			rule.setEnabled(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleName(RuleInvokerConstants.SEARCH_RULE);
+			rule.setProceedInd(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleType(RuleInvokerConstants.STATIC_HANDLER);
+			rule.setExecSeq("-1");
+			StringBuilder optionalFields = new StringBuilder();
+			optionalFields.append(RuleConstants.SEARCH_FIELD).append(RuleConstants.EQUALS)
+						  .append(ruleParams.getSearchField()).append(RuleConstants.SEPARATOR)
+						  .append(RuleConstants.EXPRESSION).append(RuleConstants.EQUALS)
+				              .append(ruleParams.getExpression()).append(RuleConstants.SEPARATOR);
+			rule.setOptionalfields(optionalFields.toString());
+			
+			ruleList.add(rule);
+		}
+		//check and add sort rule
+		if (! RuleUtil.isEmpty(ruleParams.getSortFields())){
+			rule = new Rule();
+			rule.setEnabled(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleName(RuleInvokerConstants.SORT_RULE);
+			rule.setProceedInd(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleType(RuleInvokerConstants.STATIC_HANDLER);
+			rule.setExecSeq("-1");
+			StringBuilder optionalFields = new StringBuilder();
+			optionalFields.append(RuleConstants.SORT_FIELDS).append(RuleConstants.EQUALS)
+						  .append(ruleParams.getSortFields()).append(RuleConstants.SEPARATOR);
+						
+			if (! RuleUtil.isEmpty(ruleParams.getSortOrder()))
+				optionalFields.append(RuleConstants.SORT_ORDER).append(RuleConstants.EQUALS)
+				              .append(ruleParams.getSortOrder()).append(RuleConstants.SEPARATOR);
+			rule.setOptionalfields(optionalFields.toString());
+			
+			ruleList.add(rule);
+		}
+		//check and add select/filter fields rule
+		if (! RuleUtil.isEmpty(ruleParams.getSelectFields())){
+			rule = new Rule();
+			rule.setEnabled(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleName(RuleInvokerConstants.SELECT_FIELDS_RULE);
+			rule.setProceedInd(RuleConstants.ENABLED_PROCEED_Y);
+			rule.setRuleType(RuleInvokerConstants.STATIC_HANDLER);
+			rule.setExecSeq("-1");
+			StringBuilder optionalFields = new StringBuilder();
+			optionalFields.append(RuleConstants.SELECT_FIELDS).append(RuleConstants.EQUALS)
+						  .append(ruleParams.getSelectFields()).append(RuleConstants.SEPARATOR);
+						  
+			rule.setOptionalfields(optionalFields.toString());
+			
+			ruleList.add(rule);
+		}
+		System.out.println("Querystring Rule Size --->" +ruleList.size());	
+		System.out.println("Querystring Rules --->" +ruleList);	
+		return ruleList;
+	}
+
 	/**
 	 * Return the rules with respect to microservice and hook indicator (PRE/POST)
 	 * 
@@ -124,7 +185,7 @@ public class RuleInvoker {
 	 * @return List<Rule>
 	 *
 	 */
-	private List <Rule> getRules(String microserviceName, String hookInd) throws Exception{
+	private List <Rule> getDBRules(String microserviceName, String hookInd) throws Exception{
 		
 		
 		RuleMetadataPGDAO ruleMetadataDAO = (RuleMetadataPGDAO) new DAOFactory().getDAO(

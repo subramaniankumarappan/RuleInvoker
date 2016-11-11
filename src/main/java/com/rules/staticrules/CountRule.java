@@ -40,7 +40,7 @@ public class CountRule extends BusinessRule{
 		JSONArray array = (JSONArray) json.get("result");
 		logger.info("array.size() --->" +array.size());
 		//get the limit set for this rule
-		int limit = RuleInvokerUtil.getLimit(this.getOptionalFields());
+		int limit = RuleInvokerUtil.getSize(this.getOptionalFields());
 		//if no limit set, set the array size
 		limit = limit>0?limit:array.size();
 		

@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rule.common.util.RuleInvokerUtil;
 import com.rules.common.RuleInvokerConstants;
+import com.rules.common.constants.RuleConstants;
 import com.rules.framework.BusinessRule;
 
 /**
@@ -40,8 +41,8 @@ public class SearchRule extends BusinessRule{
 		logger.info("array.size() --->" +array.size());
 		
 		//if field or expression or both are not set, return without processing.
-		if (!RuleInvokerUtil.isAvailable(this.getOptionalFields(), RuleInvokerConstants.FIELD)
-				|| !RuleInvokerUtil.isAvailable(this.getOptionalFields(), RuleInvokerConstants.EXPRESSION))
+		if (!RuleInvokerUtil.isAvailable(this.getOptionalFields(), RuleConstants.SEARCH_FIELD)
+				|| !RuleInvokerUtil.isAvailable(this.getOptionalFields(), RuleConstants.EXPRESSION))
 			return json;
 		
 		logger.info("Perform search");
@@ -54,8 +55,8 @@ public class SearchRule extends BusinessRule{
 				
 				 // String to be scanned to find the pattern.
 			     value = ((JSONObject) array.get(i)).get
-			    		  				(this.getOptionalFields().get(RuleInvokerConstants.FIELD)).toString();
-			     regexp = (String) this.getOptionalFields().get(RuleInvokerConstants.EXPRESSION);
+			    		  				(this.getOptionalFields().get(RuleConstants.SEARCH_FIELD)).toString();
+			     regexp = (String) this.getOptionalFields().get(RuleConstants.EXPRESSION);
 			      // Create a Pattern object
 			     pattern = Pattern.compile(regexp);
 	

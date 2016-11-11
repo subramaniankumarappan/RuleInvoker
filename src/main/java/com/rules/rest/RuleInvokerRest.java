@@ -1,20 +1,16 @@
 package com.rules.rest;
 
-import java.util.ArrayList;
-
 import javax.inject.Named;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
+import com.rules.common.constants.RuleConstants;
+import com.rules.common.pojo.RuleParams;
 import com.rules.controller.RuleInvoker;
-import com.rules.framework.GateHandler;
+
 
 /**
 * File  : RuleInvokerRest.java
@@ -30,24 +26,45 @@ import com.rules.framework.GateHandler;
 public class RuleInvokerRest {
 	
 	
-	@GET
-	@Path("execute")
+	@POST
+	@Path("/execute")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String executeRule(@QueryParam("input") String request, 
 			@QueryParam("msName") String microserviceName,
-			@QueryParam("hookInd") String hookInd)  {
+			@QueryParam("hookInd") String hookInd,
+			@QueryParam("sortFields") String sortFields,
+			@QueryParam("sortOrder") String sortOrder,
+			@QueryParam("selectFields") String selectFields,
+			@QueryParam("size") String size,
+			@QueryParam("searchField") String searchField,		
+			@QueryParam("expression") String expression ) throws Exception  {
 		
 		System.out.println("executeRule");
-		System.out.println("INPUT ---- > "+ request);
-		System.out.println("MicroService Name ---- > "+ microserviceName);
 		
+		
+		RuleParams ruleParams = new RuleParams();
+		ruleParams.setMsName(microserviceName);
+		ruleParams.setSortFields(sortFields);
+		ruleParams.setSortOrder(sortOrder);
+		ruleParams.setSize(size);
+		ruleParams.setSelectFields(selectFields);
+		ruleParams.setSearchField(searchField);
+		ruleParams.setExpression(expression);
+		
+		if (RuleConstants.PREHOOK_REST.equalsIgnoreCase(hookInd))
+			ruleParams.setHookInd(RuleConstants.PREHOOK);
+		else
+			ruleParams.setHookInd(RuleConstants.POSTHOOK);
+		
+		System.out.println("INPUT ---- > "+ request);
+		System.out.println("ruleParams ---- > "+ ruleParams);
 
 		if (microserviceName == null || microserviceName.equals(""))
 			throw new IllegalArgumentException("The 'Micro Service Name' parameter must not be null or empty");
 		
 		
 		
-		return new RuleInvoker().executePrehookRule(request, microserviceName);
+		return new RuleInvoker().executeRule(request, ruleParams);
 	}
 	
 	
@@ -55,35 +72,67 @@ public class RuleInvokerRest {
 	@Path("prehook")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String executePrehookRule(@QueryParam("input") String request, 
-			@QueryParam("msName") String microserviceName)  {
+			@QueryParam("msName") String microserviceName,
+			@QueryParam("sortFields") String sortFields,
+			@QueryParam("sortOrder") String sortOrder,
+			@QueryParam("selectFields") String selectFields,
+			@QueryParam("size") String size,
+			@QueryParam("searchField") String searchField,		
+			@QueryParam("expression") String expression ) throws Exception  {
 		
 		System.out.println("PreHook");
-		System.out.println("INPUT ---- > "+ request);
-		System.out.println("MicroService Name ---- > "+ microserviceName);
 		
+		RuleParams ruleParams = new RuleParams();
+		ruleParams.setMsName(microserviceName);
+		ruleParams.setSortFields(sortFields);
+		ruleParams.setSortOrder(sortOrder);
+		ruleParams.setSize(size);
+		ruleParams.setSelectFields(selectFields);
+		ruleParams.setSearchField(searchField);
+		ruleParams.setExpression(expression);
+		ruleParams.setHookInd(RuleConstants.PREHOOK);
 
+		System.out.println("INPUT ---- > "+ request);
+		System.out.println("ruleParams ---- > "+ ruleParams);
+		
 		if (microserviceName == null || microserviceName.equals(""))
 			throw new IllegalArgumentException("The 'Micro Service Name' parameter must not be null or empty");
 		
-		return new RuleInvoker().executePrehookRule(request, microserviceName);
+		return new RuleInvoker().executeRule(request, ruleParams);
 	}
 	
-	@GET
+	@POST
 	@Path("posthook")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String executePosthookRule(@QueryParam("input") String request, 
-			@QueryParam("msName") String microserviceName)  {
+			@QueryParam("msName") String microserviceName,
+			@QueryParam("sortFields") String sortFields,
+			@QueryParam("sortOrder") String sortOrder,
+			@QueryParam("selectFields") String selectFields,
+			@QueryParam("size") String size,
+			@QueryParam("searchField") String searchField,		
+			@QueryParam("expression") String expression ) throws Exception  {
 		
 		System.out.println("PostHook");
 		
+		RuleParams ruleParams = new RuleParams();
+		ruleParams.setMsName(microserviceName);
+		ruleParams.setSortFields(sortFields);
+		ruleParams.setSortOrder(sortOrder);
+		ruleParams.setSize(size);
+		ruleParams.setSelectFields(selectFields);
+		ruleParams.setSearchField(searchField);
+		ruleParams.setExpression(expression);
+		ruleParams.setHookInd(RuleConstants.POSTHOOK);
+
 		System.out.println("INPUT ---- > "+ request);
-		System.out.println("MicroService Name ---- > "+ microserviceName);
+		System.out.println("ruleParams ---- > "+ ruleParams);
 		
 
 		if (microserviceName == null || microserviceName.equals(""))
 			throw new IllegalArgumentException("The 'Micro Service Name' parameter must not be null or empty");
 		
-		return new RuleInvoker().executePosthookRule(request, microserviceName);
+		return new RuleInvoker().executeRule(request, ruleParams);
 	}
 	
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.rules.common.RuleInvokerConstants;
+import com.rules.common.constants.RuleConstants;
 import com.rules.common.util.RuleUtil;
 
 /**
@@ -19,6 +20,29 @@ import com.rules.common.util.RuleUtil;
  */
 public class RuleInvokerUtil {
 	
+    /**
+     * 
+     * @param @param optionalFields
+     * @param @return 
+     * @return List<String>
+     *
+     */
+	public static List<String> getSortFields(Map optionalFields) {
+		return getFields(optionalFields, RuleConstants.SORT_FIELDS);
+		
+	}
+	
+    /**
+     * 
+     * @param @param optionalFields
+     * @param @return 
+     * @return List<String>
+     *
+     */
+	public static List<String> getSelectFields(Map optionalFields) {
+		return getFields(optionalFields, RuleConstants.SELECT_FIELDS);
+		
+	}
 	/**
 	 * 
 	 * @param @param optionalFields
@@ -26,10 +50,10 @@ public class RuleInvokerUtil {
 	 * @return List<String>
 	 *
 	 */
-	public static List<String> getFields(Map optionalFields) {
-		if (!isAvailable(optionalFields, RuleInvokerConstants.FIELDS))
+	private static List<String> getFields(Map optionalFields, String key) {
+		if (!isAvailable(optionalFields, key))
 			return null;
-		String fields = (String) optionalFields.get(RuleInvokerConstants.FIELDS);
+		String fields = (String) optionalFields.get(key);
 		if (RuleUtil.isEmpty(fields))
 			return null;
 		
@@ -44,13 +68,13 @@ public class RuleInvokerUtil {
 	 * @return int
 	 *
 	 */
-	public static int getLimit(Map optionalFields) {
+	public static int getSize(Map optionalFields) {
 		
 		
 		try{
-			if (isAvailable(optionalFields, RuleInvokerConstants.COUNT))
+			if (isAvailable(optionalFields, RuleConstants.SIZE))
 			//check for valid value
-				return Integer.parseInt((String)optionalFields.get(RuleInvokerConstants.COUNT));
+				return Integer.parseInt((String)optionalFields.get(RuleConstants.SIZE));
 		}catch(Exception e){
 			return -1;
 		}
@@ -81,12 +105,12 @@ public class RuleInvokerUtil {
 	 * @return String
 	 *
 	 */
-	public static String getOrderBy(Map optionalFields) {
+	public static String getSortOrder(Map optionalFields) {
 		
 		String orderBy = RuleInvokerConstants.ORDER_BY_ASC;		
-		if (!isAvailable(optionalFields, RuleInvokerConstants.ORDER_BY))
+		if (!isAvailable(optionalFields, RuleConstants.SORT_ORDER))
 			return orderBy;
-		orderBy = (String) optionalFields.get(RuleInvokerConstants.ORDER_BY);
+		orderBy = (String) optionalFields.get(RuleConstants.SORT_ORDER);
 		if (RuleUtil.isEmpty(orderBy))
 			orderBy = RuleInvokerConstants.ORDER_BY_ASC;
 		

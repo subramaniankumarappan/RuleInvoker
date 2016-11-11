@@ -42,8 +42,8 @@ public class SortRule extends BusinessRule{
 		logger.info("array.size() --->" +array.size());
 		
 		//get the sort field  for this rule
-		List <String> sortFieldList = RuleInvokerUtil.getFields(this.getOptionalFields());
-		String orderBy = RuleInvokerUtil.getOrderBy(this.getOptionalFields());
+		List <String> sortFieldList = RuleInvokerUtil.getSortFields(this.getOptionalFields());
+		String orderBy = RuleInvokerUtil.getSortOrder(this.getOptionalFields());
 		
 		
 		logger.info("sortFieldList --->" +sortFieldList);
